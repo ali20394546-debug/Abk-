@@ -17,5 +17,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: My-Final-App
+          name: My-App
           path: bin/*.apk
