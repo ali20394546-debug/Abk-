@@ -29,5 +29,3 @@ jobs:
         with:
           name: My-App-Package
           path: bin/*.apk
-
-
