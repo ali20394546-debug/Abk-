@@ -1,11 +1,12 @@
-name: Android Build
-on: [push, workflow_dispatch]
+name: Sovereign APK Build
+on: [push, workflow_dispatch] # يسمح لك بتشغيل البناء يدوياً أيضاً
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -14,18 +15,18 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential git python3 autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
-          pip3 install --user --upgrade buildozer cython virtualenv
+          sudo apt update
+          sudo apt install -y git zip unzip libncurses5-dev libncursesw5-dev zlib1g-dev cpancython
+          pip install --upgrade pip
+          pip install buildozer cython==0.29.33 kivy
 
       - name: Build with Buildozer
         run: |
-          export PATH=$PATH:~/.local/bin
-          buildozer android debug
+          yes | buildozer android debug
         continue-on-error: true
 
-      - name: Upload APK
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: My-App-Package
-          path: bin/*.apk
+          name: My-Sovereign-Weapon
+          path: bin/*.apk # هذا هو السطر الذي سيُظهر لك الملف للتحميل
